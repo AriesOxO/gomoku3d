@@ -164,6 +164,11 @@ function initUIListeners() {
     window.location.href = `/stats.html?name=${encodeURIComponent(name)}`;
   });
 
+  // 排行榜按钮
+  document.getElementById('btnLeaderboard').addEventListener('click', () => {
+    window.location.href = '/leaderboard.html';
+  });
+
   // 聊天发送按钮
   document.getElementById('chatSend').addEventListener('click', handleChatSend);
   

@@ -90,6 +90,14 @@ const API = {
    */
   async getRecentGames(limit = 10) {
     return this.request(`/api/games/recent?limit=${limit}`);
+  },
+
+  /**
+   * 获取全局统计
+   * @returns {Promise<Object>} 全局统计数据
+   */
+  async getGlobalStats() {
+    return this.request('/api/stats/global');
   }
 };
 

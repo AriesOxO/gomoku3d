@@ -94,21 +94,21 @@
 ## Phase 5: 排行榜（P1）
 
 ### 13. 排行榜服务
-- [ ] 13.1 创建 StatsService `server/database/services/StatsService.js`
-- [ ] 13.2 实现 getLeaderboard() 方法
-- [ ] 13.3 实现 getPlayerRank() 方法
-- [ ] 13.4 添加缓存机制
+- [x] 13.1 创建 StatsService `server/database/services/StatsService.js`
+- [x] 13.2 实现 getLeaderboard() 方法
+- [x] 13.3 实现 getPlayerRank() 方法
+- [x] 13.4 添加缓存机制
 
 ### 14. 排行榜 API
-- [ ] 14.1 实现 `GET /api/leaderboard` 端点
-- [ ] 14.2 添加排序参数支持
-- [ ] 14.3 添加分页支持
+- [x] 14.1 实现 `GET /api/leaderboard` 端点
+- [x] 14.2 添加排序参数支持
+- [x] 14.3 添加分页支持
 
 ### 15. 排行榜页面
-- [ ] 15.1 创建排行榜页面或组件
-- [ ] 15.2 实现排行榜数据展示
-- [ ] 15.3 实现排序切换功能
-- [ ] 15.4 高亮显示当前玩家
+- [x] 15.1 创建排行榜页面或组件
+- [x] 15.2 实现排行榜数据展示
+- [x] 15.3 实现排序切换功能
+- [x] 15.4 高亮显示当前玩家
 
 ## Phase 6: 优化和完善（P2）
 

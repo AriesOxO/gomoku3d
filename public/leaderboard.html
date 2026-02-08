@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>排行榜 - 3D五子棋</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .leaderboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .leaderboard-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .leaderboard-header h1 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .leaderboard-subtitle {
+      color: #aaa;
+      font-size: 1.1em;
+    }
+
+    .stats-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-card-label {
+      color: #aaa;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+
+    .stat-card-value {
+      color: #fff;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    .stat-card.highlight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .leaderboard-table {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .table-header {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px 20px;
+      display: grid;
+      grid-template-columns: 80px 1fr 120px 120px 120px 120px 120px;
+      gap: 15px;
+      font-weight: bold;
+      color: #fff;
+      font-size: 0.9em;
+    }
+
+    .table-row {
+      padding: 15px 20px;
+      display: grid;
+      grid-template-columns: 80px 1fr 120px 120px 120px 120px 120px;
+      gap: 15px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .table-row:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .table-row:last-child {
+      border-bottom: none;
+    }
+
+    .rank {
+      font-size: 1.5em;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .rank-1 { color: #FFD700; }
+    .rank-2 { color: #C0C0C0; }
+    .rank-3 { color: #CD7F32; }
+    .rank-other { color: #aaa; }
+
+    .player-name {
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+
+    .player-name.highlight {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .stat-value {
+      color: #fff;
+      text-align: center;
+    }
+
+    .win-rate {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .win-rate.high { color: #4CAF50; }
+    .win-rate.medium { color: #FF9800; }
+    .win-rate.low { color: #f44336; }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #45a049;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .loading {
+      text-align: center;
+      color: #fff;
+      padding: 50px;
+    }
+
+    .error {
+      text-align: center;
+      color: #f44336;
+      padding: 50px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #aaa;
+      padding: 50px;
+    }
+
+    .filter-bar {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filter-bar label {
+      color: #fff;
+      font-size: 0.9em;
+    }
+
+    .filter-bar input {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .filter-bar input::placeholder {
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      .table-header, .table-row {
+        grid-template-columns: 60px 1fr 80px 80px;
+        font-size: 0.85em;
+      }
+
+      .hide-mobile {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="leaderboard-container">
+    <div class="leaderboard-header">
+      <h1>🏆 排行榜</h1>
+      <div class="leaderboard-subtitle">全球玩家排名</div>
+    </div>
+
+    <div id="loading" class="loading">
+      <p>加载中...</p>
+    </div>
+
+    <div id="error" class="error" style="display: none;">
+      <p id="error-message"></p>
+      <button class="btn btn-primary" onclick="location.reload()">重新加载</button>
+    </div>
+
+    <div id="leaderboard-content" style="display: none;">
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-card-label">总玩家数</div>
+          <div class="stat-card-value" id="total-players">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">活跃玩家</div>
+          <div class="stat-card-value" id="active-players">0</div>
+        </div>
+        <div class="stat-card highlight">
+          <div class="stat-card-label">总对局数</div>
+          <div class="stat-card-value" id="total-games">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">今日对局</div>
+          <div class="stat-card-value" id="today-games">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">本周对局</div>
+          <div class="stat-card-value" id="week-games">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">平均手数</div>
+          <div class="stat-card-value" id="avg-moves">0</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <label>搜索玩家:</label>
+        <input type="text" id="search-input" placeholder="输入玩家名称...">
+      </div>
+
+      <div class="leaderboard-table">
+        <div class="table-header">
+          <div>排名</div>
+          <div>玩家</div>
+          <div>总局数</div>
+          <div class="hide-mobile">胜局</div>
+          <div class="hide-mobile">负局</div>
+          <div class="hide-mobile">平局</div>
+          <div>胜率</div>
+        </div>
+        <div id="leaderboard-list"></div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="location.href='/'">返回大厅</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/leaderboard.js"></script>
+</body>
+</html>

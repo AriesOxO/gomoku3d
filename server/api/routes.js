@@ -6,6 +6,7 @@
 const express = require('express');
 const PlayerService = require('../database/services/PlayerService');
 const GameService = require('../database/services/GameService');
+const StatsService = require('../database/services/StatsService');
 
 const router = express.Router();
 
@@ -289,6 +290,27 @@ router.get('/leaderboard', (req, res) => {
   }
 });
 
+/**
+ * 获取全局统计
+ * GET /api/stats/global
+ */
+router.get('/stats/global', (req, res) => {
+  try {
+    const stats = StatsService.getGlobalStats();
+
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('获取全局统计失败:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: '服务器内部错误'
+      }
+    });
   }
 });
 
