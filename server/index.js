@@ -5,6 +5,8 @@ const path = require('path');
 const { setupSocketHandlers } = require('./socket/handlers');
 const db = require('./database/db');
 const apiRoutes = require('./api/routes');
+const scheduler = require('./database/scheduler');
+const { logger } = require('./utils/logger');
 
 const app = express();
 const server = http.createServer(app);
@@ -32,6 +34,13 @@ async function startServer() {
   try {
     // 初始化数据库
     await db.initialize();
+    logger.info('数据库初始化成功');
+    
+    // 启动定时任务（可选，根据需要启用）
+    if (process.env.ENABLE_SCHEDULER === 'true') {
+      scheduler.start();
+      logger.info('定时任务已启动');
+    }
     
     // 启动 HTTP 服务器
     server.listen(PORT, '0.0.0.0', () => {
@@ -49,9 +58,12 @@ async function startServer() {
         }
       }
       console.log(`\n在同一局域网下的设备都可以通过上述地址访问游戏！\n`);
+      
+      logger.info(`服务器启动成功，监听端口 ${PORT}`);
     });
   } catch (error) {
     console.error('❌ 服务器启动失败:', error);
+    logger.error('服务器启动失败', { error: error.message });
     process.exit(1);
   }
 }
@@ -59,13 +71,31 @@ async function startServer() {
 // 优雅关闭
 process.on('SIGINT', () => {
   console.log('\n正在关闭服务器...');
+  logger.info('收到 SIGINT 信号，开始优雅关闭');
+  
+  // 停止定时任务
+  if (process.env.ENABLE_SCHEDULER === 'true') {
+    scheduler.stop();
+  }
+  
+  // 关闭数据库
   db.close();
+  logger.info('服务器已关闭');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
   console.log('\n正在关闭服务器...');
+  logger.info('收到 SIGTERM 信号，开始优雅关闭');
+  
+  // 停止定时任务
+  if (process.env.ENABLE_SCHEDULER === 'true') {
+    scheduler.stop();
+  }
+  
+  // 关闭数据库
   db.close();
+  logger.info('服务器已关闭');
   process.exit(0);
 });
 

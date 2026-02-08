@@ -35,4 +35,8 @@ data/*.db-wal
 data/test-backup.db
 
 # 数据库备份
-backups/
+data/backups/
+
+# 日志文件
+logs/
+*.log
