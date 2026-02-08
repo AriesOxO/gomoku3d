@@ -57,16 +57,34 @@ npm start
 
 ```
 gomoku3d/
-├── server.js          # 服务端 (Express + Socket.IO)
-├── package.json       # 项目配置
-├── README.md          # 说明文档
-└── public/
-    └── index.html     # 前端页面 (Three.js + 游戏逻辑)
+├── server/                 # 服务端代码
+│   ├── index.js           # 服务器入口
+│   ├── game/              # 游戏逻辑
+│   │   ├── GameLogic.js   # 胜负判断
+│   │   └── Room.js        # 房间管理
+│   └── socket/            # Socket 通信
+│       └── handlers.js    # 事件处理器
+├── public/                # 前端资源
+│   ├── index.html         # 主页面
+│   ├── css/               # 样式文件
+│   │   └── style.css      # 主样式
+│   └── js/                # JavaScript 模块
+│       ├── main.js        # 应用入口
+│       ├── state.js       # 状态管理
+│       ├── socket.js      # Socket 通信
+│       ├── ui.js          # UI 控制
+│       └── game3d.js      # 3D 渲染
+├── docs/                  # 项目文档
+│   └── 项目架构.md        # 架构说明
+├── package.json           # 项目配置
+└── README.md             # 项目说明
 ```
+
+> 📖 详细架构说明请查看 [docs/项目架构.md](docs/项目架构.md)
 
 ## ⚙️ 自定义配置
 
-修改 `server.js` 中的端口号：
+修改 `server/index.js` 中的端口号：
 ```javascript
 const PORT = process.env.PORT || 3000;
 ```
@@ -75,3 +93,22 @@ const PORT = process.env.PORT || 3000;
 ```bash
 PORT=8080 npm start
 ```
+
+## 📚 项目文档
+
+- [项目架构说明](docs/项目架构.md) - 详细的技术架构和设计原则
+- [测试指南](docs/测试指南.md) - 完整的功能测试清单
+- [重构总结](docs/重构总结.md) - 项目重构过程和成果
+
+## 🔄 版本历史
+
+### v2.0.0 (当前版本)
+- ✅ 完全模块化重构
+- ✅ 前端拆分为 11 个模块
+- ✅ 后端拆分为 4 个模块
+- ✅ 所有文件 ≤ 300 行
+- ✅ 完善的中文文档
+
+### v1.0.0 (已归档)
+- 原始单文件版本
+- 备份文件: `server_old.js`, `public/index_old.html`
