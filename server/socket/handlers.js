@@ -5,6 +5,7 @@
 
 const Room = require('../game/Room');
 const GameLogic = require('../game/GameLogic');
+const GameService = require('../database/services/GameService');
 
 class SocketHandlers {
   constructor(io) {
@@ -97,6 +98,9 @@ class SocketHandlers {
       currentTurn: 1
     });
 
+    // 记录游戏开始时间
+    room.startedAt = new Date();
+
     console.log(`玩家 ${socket.id} 加入房间 ${roomId}`);
   }
 
@@ -148,6 +152,12 @@ class SocketHandlers {
         winner: socket.playerColor,
         winnerName: winnerPlayer.name
       });
+
+      // 异步保存对局数据
+      this.saveGameData(room).catch(error => {
+        console.error('保存对局数据失败:', error);
+      });
+
       return;
     }
 
@@ -163,6 +173,12 @@ class SocketHandlers {
         winner: 0, 
         winnerName: '平局' 
       });
+
+      // 异步保存对局数据
+      this.saveGameData(room).catch(error => {
+        console.error('保存对局数据失败:', error);
+      });
+
       return;
     }
 
@@ -179,6 +195,33 @@ class SocketHandlers {
   }
 
   /**
+   * 保存对局数据到数据库
+   */
+  async saveGameData(room) {
+    try {
+      if (!room.startedAt || room.players.length < 2) {
+        console.log('⚠️ 对局数据不完整，跳过保存');
+        return;
+      }
+
+      const gameData = {
+        roomId: room.id,
+        blackPlayerName: room.players[0].name,
+        whitePlayerName: room.players[1].name,
+        winner: room.winner || 0,
+        moves: room.moveHistory,
+        duration: room.getDuration(),
+        startedAt: room.startedAt,
+        finishedAt: new Date()
+      };
+
+      await GameService.saveGame(gameData);
+    } catch (error) {
+      console.error('保存对局数据失败:', error);
+    }
+  }
+
+  /**
    * 重新开始游戏
    */
   handleRestartGame(socket) {
@@ -189,6 +232,8 @@ class SocketHandlers {
     }
 
     room.reset();
+    // 重新记录开始时间
+    room.startedAt = new Date();
     this.io.to(socket.roomId).emit('game_restart', { currentTurn: 1 });
   }
 

@@ -12,6 +12,7 @@ class Room {
     this.gameOver = false;
     this.winner = null;
     this.moveHistory = [];
+    this.startedAt = null; // 游戏开始时间
   }
 
   /**
@@ -68,6 +69,17 @@ class Room {
   }
 
   /**
+   * 获取游戏时长（秒）
+   * @returns {number} 游戏时长
+   */
+  getDuration() {
+    if (!this.startedAt) {
+      return 0;
+    }
+    return Math.floor((new Date() - this.startedAt) / 1000);
+  }
+
+  /**
    * 重置游戏
    */
   reset() {
@@ -76,6 +88,7 @@ class Room {
     this.gameOver = false;
     this.winner = null;
     this.moveHistory = [];
+    this.startedAt = null;
   }
 
   /**
