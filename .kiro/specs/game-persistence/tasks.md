@@ -59,16 +59,16 @@
 ## Phase 3: 对局历史（P1）
 
 ### 8. 历史查询 API
-- [ ] 8.1 实现 `GET /api/players/:name/games` 端点
-- [ ] 8.2 添加分页支持（limit, offset）
-- [ ] 8.3 添加排序支持（按时间）
+- [x] 8.1 实现 `GET /api/players/:name/games` 端点
+- [x] 8.2 添加分页支持（limit, offset）
+- [x] 8.3 添加排序支持（按时间）
 
 ### 9. 历史页面
-- [ ] 9.1 创建历史页面 HTML `public/pages/history.html`
-- [ ] 9.2 创建历史页面逻辑 `public/js/history.js`
-- [ ] 9.3 实现对局列表展示
-- [ ] 9.4 实现"加载更多"功能
-- [ ] 9.5 添加跳转到回放功能
+- [x] 9.1 创建历史页面 HTML `public/history.html`
+- [x] 9.2 创建历史页面逻辑 `public/js/history.js`
+- [x] 9.3 实现对局列表展示
+- [x] 9.4 实现"加载更多"功能
+- [x] 9.5 添加跳转到回放功能
 
 ## Phase 4: 回放功能（P1）
 

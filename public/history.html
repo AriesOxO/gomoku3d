@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>对局历史 - 3D五子棋</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .history-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .history-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .history-header h1 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .player-name {
+      color: #4CAF50;
+      font-size: 1.3em;
+    }
+
+    .filter-bar {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .filter-bar label {
+      color: #fff;
+      font-size: 0.9em;
+    }
+
+    .filter-bar select {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .games-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 20px;
+      align-items: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .game-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .game-number {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #667eea;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .game-info {
+      flex: 1;
+    }
+
+    .game-players {
+      color: #fff;
+      font-size: 1.1em;
+      margin-bottom: 8px;
+    }
+
+    .player-black {
+      color: #fff;
+    }
+
+    .player-white {
+      color: #aaa;
+    }
+
+    .game-meta {
+      color: #aaa;
+      font-size: 0.9em;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .game-result {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1.1em;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .result-win {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: #fff;
+    }
+
+    .result-loss {
+      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+      color: #fff;
+    }
+
+    .result-draw {
+      background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+      color: #fff;
+    }
+
+    .load-more {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #45a049;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #fff;
+      padding: 50px;
+    }
+
+    .error {
+      text-align: center;
+      color: #f44336;
+      padding: 50px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #aaa;
+      padding: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .empty-icon {
+      font-size: 3em;
+      margin-bottom: 15px;
+    }
+
+    .stats-summary {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-label {
+      color: #aaa;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      color: #fff;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="history-container">
+    <div class="history-header">
+      <h1>对局历史</h1>
+      <div class="player-name" id="player-name"></div>
+    </div>
+
+    <div id="loading" class="loading">
+      <p>加载中...</p>
+    </div>
+
+    <div id="error" class="error" style="display: none;">
+      <p id="error-message"></p>
+      <button class="btn btn-primary" onclick="location.href='/'">返回大厅</button>
+    </div>
+
+    <div id="history-content" style="display: none;">
+      <div class="stats-summary">
+        <div class="stat-item">
+          <div class="stat-label">总局数</div>
+          <div class="stat-value" id="total-games">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">胜局</div>
+          <div class="stat-value" id="wins" style="color: #4CAF50;">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">负局</div>
+          <div class="stat-value" id="losses" style="color: #f44336;">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">平局</div>
+          <div class="stat-value" id="draws" style="color: #FF9800;">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">胜率</div>
+          <div class="stat-value" id="win-rate">0%</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <label>排序:</label>
+        <select id="sort-select">
+          <option value="time-desc">时间 (最新)</option>
+          <option value="time-asc">时间 (最早)</option>
+        </select>
+        <label>筛选:</label>
+        <select id="filter-select">
+          <option value="all">全部</option>
+          <option value="win">胜局</option>
+          <option value="loss">负局</option>
+          <option value="draw">平局</option>
+        </select>
+      </div>
+
+      <div class="games-list" id="games-list"></div>
+
+      <div class="load-more" id="load-more-container" style="display: none;">
+        <button class="btn btn-secondary" id="btn-load-more">加载更多</button>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="history.back()">返回</button>
+        <button class="btn btn-primary" onclick="location.href='/'">返回大厅</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/history.js"></script>
+</body>
+</html>
