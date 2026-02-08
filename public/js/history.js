@@ -191,9 +191,7 @@ function formatDuration(seconds) {
 
 // 查看对局详情（跳转到回放页面）
 function viewGame(gameId) {
-  // TODO: 实现回放功能后取消注释
-  // window.location.href = `/replay.html?id=${gameId}`;
-  alert(`对局 ID: ${gameId}\n回放功能将在 Phase 4 实现`);
+  window.location.href = `/replay.html?id=${gameId}`;
 }
 
 // 加载更多
