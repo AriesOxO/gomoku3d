@@ -39,22 +39,22 @@
 ## Phase 2: 战绩查询（P0）
 
 ### 5. API 路由实现
-- [ ] 5.1 创建 API 路由文件 `server/api/routes.js`
-- [ ] 5.2 实现 `GET /api/players/:name/stats` 端点
-- [ ] 5.3 实现错误处理中间件
-- [ ] 5.4 集成到 Express 应用
+- [x] 5.1 创建 API 路由文件 `server/api/routes.js`
+- [x] 5.2 实现 `GET /api/players/:name/stats` 端点
+- [x] 5.3 实现错误处理中间件
+- [x] 5.4 集成到 Express 应用
 
 ### 6. 前端 API 封装
-- [ ] 6.1 创建 API 调用模块 `public/js/api.js`
-- [ ] 6.2 实现 getPlayerStats() 函数
-- [ ] 6.3 实现错误处理
+- [x] 6.1 创建 API 调用模块 `public/js/api.js`
+- [x] 6.2 实现 getPlayerStats() 函数
+- [x] 6.3 实现错误处理
 
 ### 7. 战绩页面
-- [ ] 7.1 创建战绩页面 HTML `public/pages/stats.html`
-- [ ] 7.2 创建战绩页面逻辑 `public/js/stats.js`
-- [ ] 7.3 在大厅添加"查看战绩"按钮
-- [ ] 7.4 实现战绩数据展示
-- [ ] 7.5 添加返回大厅功能
+- [x] 7.1 创建战绩页面 HTML `public/stats.html`
+- [x] 7.2 创建战绩页面逻辑 `public/js/stats.js`
+- [x] 7.3 在大厅添加"查看战绩"按钮
+- [x] 7.4 实现战绩数据展示
+- [x] 7.5 添加返回大厅功能
 
 ## Phase 3: 对局历史（P1）
 

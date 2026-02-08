@@ -154,6 +154,16 @@ function initUIListeners() {
     joinRoom(name, rid);
   });
 
+  // 查看战绩按钮
+  document.getElementById('btnStats').addEventListener('click', () => {
+    const name = document.getElementById('playerName').value.trim();
+    if (!name) {
+      showLobbyError('请先输入昵称');
+      return;
+    }
+    window.location.href = `/stats.html?name=${encodeURIComponent(name)}`;
+  });
+
   // 聊天发送按钮
   document.getElementById('chatSend').addEventListener('click', handleChatSend);
   

@@ -4,12 +4,20 @@ const { Server } = require('socket.io');
 const path = require('path');
 const { setupSocketHandlers } = require('./socket/handlers');
 const db = require('./database/db');
+const apiRoutes = require('./api/routes');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: '*' }
 });
+
+// 中间件
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// API 路由
+app.use('/api', apiRoutes);
 
 // 静态文件服务
 app.use(express.static(path.join(__dirname, '../public')));
